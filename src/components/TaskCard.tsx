@@ -1,8 +1,9 @@
 import { useState } from "react";
-import TrashIcon from "../icons/TrashIcon";
 import { Id, Task } from "../types";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { GrEdit } from "react-icons/gr";
+import Modal from "./Modal";
 
 interface Props {
   task: Task;
@@ -13,6 +14,7 @@ interface Props {
 function TaskCard({ task, deleteTask, updateTask }: Props) {
   const [mouseIsOver, setMouseIsOver] = useState(false);
   const [editMode, setEditMode] = useState(true);
+  const [showCardOptions, setShowCardOptions] = useState(false);
 
   const {
     setNodeRef,
@@ -47,7 +49,7 @@ function TaskCard({ task, deleteTask, updateTask }: Props) {
         style={style}
         className="
         opacity-30
-      bg-white px-4 py-1.5 h-fit items-center flex text-left rounded-xl border-2 border-blue-500 cursor-grab relative
+        p-1.5 h-fit items-center flex text-left rounded-xl border-2 border-blue-500  cursor-grab relative
       "
       />
     );
@@ -60,7 +62,7 @@ function TaskCard({ task, deleteTask, updateTask }: Props) {
         style={style}
         {...attributes}
         {...listeners}
-        className="bg-white text-black px-4 py-1.5 min-h-[50px] h-fit items-center flex text-left rounded-xl hover:ring-2 hover:ring-inset hover:ring-blue-500 cursor-grab relative"
+        className="bg-white text-black px-4 py-1.5 h-fit items-center flex text-left rounded-xl hover:ring-2 hover:ring-inset hover:ring-blue-500 cursor-grab relative"
       >
         <input
           className="
@@ -89,7 +91,7 @@ function TaskCard({ task, deleteTask, updateTask }: Props) {
       {...attributes}
       {...listeners}
       onClick={toggleEditMode}
-      className="bg-white text-gray-600 px-4 py-1.5 h-fit items-center flex text-left rounded-xl hover:ring-2 hover:ring-inset hover:ring-rose-500 cursor-grab relative task"
+      className="bg-white text-gray-600 px-4 py-1.5 h-fit items-center flex text-left rounded-xl hover:ring-2 hover:ring-inset hover:ring-blue-500 cursor-grab relative task"
       onMouseEnter={() => {
         setMouseIsOver(true);
       }}
@@ -97,22 +99,34 @@ function TaskCard({ task, deleteTask, updateTask }: Props) {
         setMouseIsOver(false);
       }}
     >
-      <p className="my-auto h-[90%] w-full overflow-y-auto overflow-x-hidden whitespace-pre-wrap">
+      <p className="w-full overflow-y-auto overflow-x-hidden whitespace-pre-wrap">
         {task.content}
       </p>
 
       {mouseIsOver && (
         <button
-          onClick={() => {
-            deleteTask(task.id);
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowCardOptions(true);
           }}
-          className="stroke-white absolute right-4 top-1/2 -translate-y-1/2 bg-columnBackgroundColor p-2 rounded opacity-60 hover:opacity-100"
+          className="text-black absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded opacity-60 hover:opacity-100"
         >
-          <TrashIcon />
+          <GrEdit />
         </button>
+      )}
+      {showCardOptions && (
+        <Modal
+          showCardOptions={showCardOptions}
+          setShowCardOptions={setShowCardOptions}
+          deleteTask={deleteTask}
+          setEditMode={setEditMode}
+          task={task}
+        />
       )}
     </div>
   );
 }
 
 export default TaskCard;
+
+// deleteTask(task.id);

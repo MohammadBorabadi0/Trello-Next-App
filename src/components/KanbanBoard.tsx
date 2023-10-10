@@ -1,4 +1,3 @@
-import PlusIcon from "../icons/PlusIcon";
 import { useMemo, useState } from "react";
 import { Column, Id, Task } from "../types";
 import ColumnContainer from "./ColumnContainer";
@@ -71,23 +70,20 @@ function KanbanBoard() {
               createNewColumn();
             }}
             className="
-      h-[60px]
       w-[275px]
+      h-fit
+      text-white
+      font-semibold
       cursor-pointer
       rounded-lg
-      bg-mainBackgroundColor
-      border-2
-      border-columnBackgroundColor
+      bgPrimary
       p-4
-      ring-rose-500
-      hover:ring-2
       flex
       gap-2
       mr-3
       "
           >
-            <PlusIcon />
-            Add Column
+            + Add another list
           </button>
         </div>
 
@@ -196,8 +192,6 @@ function KanbanBoard() {
 
     const isActiveAColumn = active.data.current?.type === "Column";
     if (!isActiveAColumn) return;
-
-    console.log("DRAG END");
 
     setColumns((columns) => {
       const activeColumnIndex = columns.findIndex((col) => col.id === activeId);

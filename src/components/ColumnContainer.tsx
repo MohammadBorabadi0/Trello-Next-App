@@ -1,10 +1,12 @@
 import { SortableContext, useSortable } from "@dnd-kit/sortable";
-import TrashIcon from "../icons/TrashIcon";
 import { Column, Id, Task } from "../types";
 import { CSS } from "@dnd-kit/utilities";
 import { useMemo, useState } from "react";
-import PlusIcon from "../icons/PlusIcon";
 import TaskCard from "./TaskCard";
+import { BiPlus } from "react-icons/bi";
+import { FiMoreHorizontal } from "react-icons/fi";
+import Modal from "./Modal";
+import { useColumnStore } from "../store/Store";
 
 interface Props {
   column: Column;
@@ -27,6 +29,9 @@ function ColumnContainer({
   updateTask,
 }: Props) {
   const [editMode, setEditMode] = useState(false);
+  const [showColumnOptions, setShowColumnOptions] = useState(false);
+
+  const { addColumn, columns } = useColumnStore((state) => state);
 
   const tasksIds = useMemo(() => {
     return tasks.map((task) => task.id);
@@ -59,13 +64,13 @@ function ColumnContainer({
         ref={setNodeRef}
         style={style}
         className="
-        bg-[#F1F2F4]
       opacity-40
       border-2
       border-pink-500
-      w-[350px]
-      h-[500px]
-      max-h-[500px]
+      bg-gray-400
+      w-[275px]
+      min-h-[100px]
+      max-h-fit
       rounded-md
       flex
       flex-col
@@ -78,15 +83,16 @@ function ColumnContainer({
     <div
       ref={setNodeRef}
       style={style}
-      className="
-  bg-[#F1F2F4]
-  w-[275px]
-  h-fit
-  max-h-[75vh]
-  rounded-xl
-  flex
-  flex-col
-  "
+      className={`
+      bg-[#F1F2F4]
+      w-[275px]
+      h-fit
+      max-h-[500px]
+      shadow-lg
+      rounded-md
+      flex
+      flex-col
+    `}
     >
       {/* Column title */}
       <div
@@ -96,25 +102,26 @@ function ColumnContainer({
           setEditMode(true);
         }}
         className="
-        bg-[#F1F2F4]
-        text-black
-      text-md
-      h-[60px]
-      cursor-grab
-      rounded-xl
-      rounded-b-none
-      p-3
-      font-bold
-      flex
-      items-center
-      justify-between
+        text-md
+        h-[60px]
+        cursor-grab
+        rounded-md
+        rounded-b-none
+        p-3
+        font-bold
+      bg-[#F1F2F4]
+      text-black
+        flex
+        items-center
+        justify-between
+        relative
       "
       >
-        <div className="flex gap-2">
+        <div className="flex items-center gap-2">
           {!editMode && column.title}
           {editMode && (
             <input
-              className="bg-white focus:border-rose-500 border rounded outline-none px-2"
+              className="h-full bg-white focus:border-blue-500 border-2 rounded-lg outline-none px-2 py-1"
               value={column.title}
               onChange={(e) => updateColumn(column.id, e.target.value)}
               autoFocus
@@ -129,24 +136,27 @@ function ColumnContainer({
           )}
         </div>
         <button
-          onClick={() => {
-            deleteColumn(column.id);
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowColumnOptions(true);
           }}
-          className="
-        stroke-gray-500
-        hover:stroke-white
-        hover:bg-columnBackgroundColor
-        rounded
-        px-1
-        py-2
-        "
+          className="rounded p-2"
         >
-          <TrashIcon />
+          <FiMoreHorizontal />
         </button>
+        {showColumnOptions && (
+          <Modal
+            showColumnOptions={showColumnOptions}
+            setShowColumnOptions={setShowColumnOptions}
+            deleteColumn={deleteColumn}
+            setEditMode={setEditMode}
+            column={column}
+          />
+        )}
       </div>
 
       {/* Column task container */}
-      <div className="flex flex-grow flex-col gap-4 p-2 overflow-x-hidden overflow-y-auto">
+      <div className="flex flex-grow flex-col gap-3 p-2 bg-[#F1F2F4] overflow-x-hidden overflow-y-auto">
         <SortableContext items={tasksIds}>
           {tasks.map((task) => (
             <TaskCard
@@ -160,16 +170,24 @@ function ColumnContainer({
       </div>
       {/* Column footer */}
       <button
-        className="flex gap-2 items-center border-columnBackgroundColor border-2 rounded-md p-4 border-x-columnBackgroundColor hover:bg-mainBackgroundColor hover:text-rose-500 active:bg-black"
+        className="flex bg-[#F1F2F4] text-black gap-2 items-center border rounded-b-md px-4 py-3"
         onClick={() => {
           createTask(column.id);
         }}
       >
-        <PlusIcon />
+        <BiPlus />
         Add task
       </button>
+      <button onClick={() => addColumn({ id: "1", title: "Todo" })}>
+        Add Column
+      </button>
+      {JSON.stringify(columns)}
     </div>
   );
 }
 
 export default ColumnContainer;
+
+// onClick={() => {
+//   deleteColumn(column.id);
+// }}

@@ -16,7 +16,7 @@ const TopNav = () => {
 
   return (
     <section
-      className={`fixed top-12 z-10 flex justify-between items-center px-3 pl-5 text-white bg-blue-700 h-[55px] overflow-hidden ${
+      className={`fixed top-12 z-10 flex flex-wrap justify-between items-center px-3 pl-5 text-white bg-blue-700 h-fit md:h-[55px] overflow-hidden ${
         showSidebar ? "w-[1236px]" : "w-[1520px]"
       }`}
     >

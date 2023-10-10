@@ -7,7 +7,7 @@ const navItems = ["Workspaces", "Recent", "Starred", "Templates"];
 const Nav = () => {
   return (
     <nav>
-      <ul className="flex items-center text-white font-semibold gap-2 text-sm">
+      <ul className="hidden md:flex items-center text-white font-semibold gap-2 text-sm">
         {navItems.map((item, index) => (
           <li
             key={index}
