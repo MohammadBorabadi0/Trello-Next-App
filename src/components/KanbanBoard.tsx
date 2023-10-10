@@ -140,12 +140,12 @@ function KanbanBoard() {
     setTasks(newTasks);
   }
 
+  // add column 
   function createNewColumn() {
     const columnToAdd: Column = {
       id: generateId(),
       title: `Column ${columns.length + 1}`,
     };
-
     setColumns([...columns, columnToAdd]);
   }
 
